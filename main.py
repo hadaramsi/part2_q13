@@ -59,16 +59,18 @@ def rombergMethod(f, a, b, end, epsilon):
     """
     results = [[0 for i in range(end + 1)] for j in range(end + 1)]  # build matrix
     for k in range(0, end):
+        print("R" + str(k+1) + "," + str(1) + " = ", end="")
         res = trapezoidMethod(f, a, b, 2 ** k)  # calculate the values of trapezoid method
         results[k+1][1] = res  # save the value in the matrix
-        print("R" + str(k+1) + "," + str(1) + " = " + str(res))  # print the value
+        print(" = " + str(res))  # print the value
     for j in range(2, end + 1):
         for k in range(j, end + 1):
             results[k][j] = results[k][j - 1] + ((1 / ((4 ** (j - 1)) - 1)) * (results[k][j - 1] - results[k - 1][j - 1]))
             print("R" + str(k) + "," + str(j) + " = " + str(results[k][j]))  # print the value
-            if abs(results[k][j] - results[k - 1][j]) < epsilon:  # if the difference is less then epsilon
+            if abs(results[k][j] - results[k - 1][j]) <= epsilon:  # if the difference is less then epsilon
                 return results[k][j]
-    return results[j][k]
+    return results[k][j]
+
 
 
 def trapezoidMethod(f, a, b, n):
@@ -83,8 +85,17 @@ def trapezoidMethod(f, a, b, n):
     f = lambdify(x, f)
     h = (b - a) / n
     sum = 0
+    save = a
+    count = 0
     while a < b:
         sum += 0.5 * ((a + h) - a) * (f(a) + f(a + h))
+        count +=1
+        if a is not save:
+            print(" + ", end="")
+        if count is 3:
+            print("\n       ", end="")
+            count = 0
+        print("1/2 * (" + str(b) + " - " + str(a) + ") * (f(" + str(a) + " + f(" + str(a + h) + "))", end="")
         a += h
     return sum
 
@@ -273,6 +284,7 @@ def driver():
     the main program
     :return: print the results
     """
+    print("\n******* Part 2 - Q13_a *******")
     x = sp.symbols('x')
     f = (2 * x * (math.exp(1) ** (-x)) + ln(2 * x ** 2)) * (2 * x ** 2 - 3 * x - 5)
     startRange = 0 + machineEpsilon()
@@ -283,15 +295,20 @@ def driver():
     print("Secant method")
     d = secant_method(f, startRange, endRange, epsilon)
     checkDiffer(l, d, epsilon)
-
-
 #     ------------ integral ---------------------
-
+    print("\n******* Part 2 - Q13_b *******")
     startRange = 0.5
     endRange = 1
-    print("simpson method")
-    print(simpson(f, startRange, endRange, 6))
-    print("romberg Method")
-    print(calcFinalResult(rombergMethod(f, startRange, endRange, 5, epsilon), epsilon, '13', '18', '33'))
+    print("\nsimpson method")
+    s = simpson(f, startRange, endRange, 6)
+    print("Final result: " + calcFinalResult(s, epsilon, '13', '18', '33'))
+    print("\nromberg Method")
+    r = rombergMethod(f, startRange, endRange, 5, epsilon)
+    print("Final result: " + calcFinalResult(r, epsilon, '13', '18', '33'))
+
+    if abs(s - r) <= epsilon:
+        print("\n* The difference between the two methods is smaller than the epsilon")
+    else:
+        print("\n* The difference between the two methods is bigger than the epsilon - needs another method")
 
 driver()
