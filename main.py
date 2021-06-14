@@ -30,7 +30,8 @@ def simpson(f, startPoint, endPoint, parts):
     x = sp.symbols('x')
     func = lambdify(x, f)
     gap = abs(endPoint - startPoint) / parts  # calculate h
-    string = "Integral(" + str(startPoint) + ", " + str(endPoint) + ") = 1/3 * " + str(gap) + "[f(" + str(startPoint) + ")"
+    string = "Integral(" + str(startPoint) + ", " + str(endPoint) + ") = 1/3 * " + str(gap) + "[f(" + str(
+        startPoint) + ")"
     appr = func(startPoint)  # placing the start point in the function
     for i in range(1, parts):  # run over the parts
         if i % 2 == 0:  # if is the even place
@@ -39,7 +40,7 @@ def simpson(f, startPoint, endPoint, parts):
         else:  # if is not the even place
             string += " + 4 * f(" + str((i * gap) + startPoint) + ")"
             appr += 4 * func((i * gap) + startPoint)
-        if i % 4 ==0:  # for the printing
+        if i % 4 == 0:  # for the printing
             string += "\n"
     string += " * f(" + str(endPoint) + ")]\n"
     print(string)  # print the equation
@@ -59,18 +60,18 @@ def rombergMethod(f, a, b, end, epsilon):
     """
     results = [[0 for i in range(end + 1)] for j in range(end + 1)]  # build matrix
     for k in range(0, end):
-        print("R" + str(k+1) + "," + str(1) + " = ", end="")
+        print("R" + str(k + 1) + "," + str(1) + " = ", end="")
         res = trapezoidMethod(f, a, b, 2 ** k)  # calculate the values of trapezoid method
-        results[k+1][1] = res  # save the value in the matrix
+        results[k + 1][1] = res  # save the value in the matrix
         print(" = " + str(res))  # print the value
     for j in range(2, end + 1):
         for k in range(j, end + 1):
-            results[k][j] = results[k][j - 1] + ((1 / ((4 ** (j - 1)) - 1)) * (results[k][j - 1] - results[k - 1][j - 1]))
+            results[k][j] = results[k][j - 1] + (
+                        (1 / ((4 ** (j - 1)) - 1)) * (results[k][j - 1] - results[k - 1][j - 1]))
             print("R" + str(k) + "," + str(j) + " = " + str(results[k][j]))  # print the value
             if abs(results[k][j] - results[k - 1][j]) <= epsilon:  # if the difference is less then epsilon
                 return results[k][j]
     return results[k][j]
-
 
 
 def trapezoidMethod(f, a, b, n):
@@ -89,7 +90,7 @@ def trapezoidMethod(f, a, b, n):
     count = 0
     while a < b:
         sum += 0.5 * ((a + h) - a) * (f(a) + f(a + h))
-        count +=1
+        count += 1
         if a is not save:
             print(" + ", end="")
         if count is 3:
@@ -121,7 +122,8 @@ def rangeDivision(polinom, start_point, end_point, epsilon, function):
         if iter is not None:  # if the return iteration value is not None
             if (res > -epsilon) and (res < epsilon):  # check if the result is very close to 0
                 res = 0
-            print("The root is " + calcFinalResult(str(res), epsilon, '13', '18', '52') + "\nNumber of iteration is: " + str(iter))
+            print("The root is " + calcFinalResult(str(res), epsilon, '13', '18',
+                                                   '52') + "\nNumber of iteration is: " + str(iter))
             results.append(res)
             flag = True
         else:
@@ -135,7 +137,8 @@ def rangeDivision(polinom, start_point, end_point, epsilon, function):
                 res = 0
             if (lambdify(x, polinom)(res) > - epsilon) and (
                     lambdify(x, polinom)(res) < epsilon):  # only if the res is root
-                print("The root is " + calcFinalResult(str(res), epsilon, '13', '18', '52') + "\nNumber of iteration is: " + str(iter))
+                print("The root is " + calcFinalResult(str(res), epsilon, '13', '18',
+                                                       '52') + "\nNumber of iteration is: " + str(iter))
                 results.append(res)
                 flag = True
             else:
@@ -180,7 +183,9 @@ def calcByNewtonRaphson(pol, startPoint, endPoint, epsilon):
     while iteration < 100:
         res1 = pol(Xr)
         res2 = der(Xr)
-        print("Iteration number: " + str(iteration) + ", Xr = " + str(Xr) + ", f(x) = " + str(res1) + ", f`(x) = " + str(res2))
+        print(
+            "Iteration number: " + str(iteration) + ", Xr = " + str(Xr) + ", f(x) = " + str(res1) + ", f`(x) = " + str(
+                res2))
         iteration += 1
         Xnext = Xr - (res1 / res2)
         if abs(Xnext - Xr) < epsilon:
@@ -223,7 +228,9 @@ def calcBySecant(polinom, start_point, end_point, epsilon):
     while iteration < 100:
         res1 = polinom(Xr)
         res2 = polinom(Xnext)
-        print("Iteration number: " + str(iteration) + ", Xr = " + str(Xr) + ", f(x) = " + str(res1) + ", f`(x) = " + str(res2))
+        print(
+            "Iteration number: " + str(iteration) + ", Xr = " + str(Xr) + ", f(x) = " + str(res1) + ", f`(x) = " + str(
+                res2))
         iteration += 1
         temp = Xnext
         Xnext = ((Xr * res2) - (Xnext * res1)) / (res2 - res1)
@@ -268,15 +275,16 @@ def calcFinalResult(result, epsilon, day, hour, minutes):
         epsilon *= 10
         count += 1
     differ = len(stringRes)
-    while differ < i + count:   # fill difference with zero if the number is to short after the point
+    while differ < i + count:  # fill difference with zero if the number is to short after the point
         stringRes += "0"
         differ += 1
     stringRes = stringRes[:i + count] + "00000" + day + hour + minutes
     return stringRes
 
+
 def machineEpsilon(func=float):
     machine_epsilon = func(1)
-    while func(1)+func(machine_epsilon) != func(1):
+    while func(1) + func(machine_epsilon) != func(1):
         machine_epsilon_last = machine_epsilon
         machine_epsilon = func(machine_epsilon) / func(2)
     return machine_epsilon_last
@@ -298,12 +306,13 @@ def driver():
     print("Secant method")
     d = secant_method(f, startRange, endRange, epsilon)
     checkDiffer(l, d, epsilon)
-#     ------------ integral ---------------------
+    #     ------------ integral ---------------------
     print("\n******* Part 2 - Q13_b *******")
     startRange = 0.5
     endRange = 1
     print("\nsimpson method")
     s = simpson(f, startRange, endRange, 6)
+    print("area is " + str(s))
     print("Final result: " + calcFinalResult(s, epsilon, '13', '18', '33'))
     print("\nromberg Method")
     r = rombergMethod(f, startRange, endRange, 5, epsilon)
@@ -313,5 +322,6 @@ def driver():
         print("\n* The difference between the two methods is smaller than the epsilon")
     else:
         print("\n* The difference between the two methods is bigger than the epsilon - needs another method")
+
 
 driver()
